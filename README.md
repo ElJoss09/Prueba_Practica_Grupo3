@@ -4,8 +4,8 @@ Proyecto modular de consola en **Java 17** para gestionar el árbol general de u
 
 ## 👥 Integrantes del Grupo N° 3
 
-| Nombre Completo | Rol / Responsabilidad | Rama de Git | Contribuciones Principalmente Subidas |
-| :--- | :--- | :--- | :--- |
+| Nombre Completo | Rol / Responsabilidad |
+| :--- | :--- |
 | **Justin Guanoquiza** | Creador de Repositorio 
 | **Edwin Guamanquispe** | Desarrollador 
 | **Oseas Ortiz** | Desarrollador 
