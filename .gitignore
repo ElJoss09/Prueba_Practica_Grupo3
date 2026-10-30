@@ -2,3 +2,8 @@ target/
 .idea/
 .vscode/
 *.class
+=======
+*.class
+.idea/
+.vscode/
+.DS_Store
