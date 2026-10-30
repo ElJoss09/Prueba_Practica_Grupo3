@@ -1,0 +1,107 @@
+
+=== SISTEMA DE AUDITORÍA JERÁRQUICA Y ACADÉMICA UTA ===
+1. Mostrar jerarquía general
+2. Agregar unidad
+3. Buscar unidad
+4. Eliminar unidad segura
+5. Información general
+6. Construir ABB base
+7. Insertar matrícula
+8. Buscar matrícula
+9. Eliminar matrícula
+10. Mostrar recorridos ABB
+11. Auditoría ABB
+12. Comparación de búsquedas
+0. Salir
+Seleccione una opción: UTA - Universidad Técnica de Ambato
+  FISEI - Facultad de Ingeniería en Sistemas
+    SOFTWARE - Software
+      3A - 3A
+      3B - 3B
+    TI - Tecnologías de la Información
+      4A - 4A
+  FCHE - Facultad de Ciencias Humanas
+  FCS - Facultad de Ciencias de la Salud
+
+=== SISTEMA DE AUDITORÍA JERÁRQUICA Y ACADÉMICA UTA ===
+1. Mostrar jerarquía general
+2. Agregar unidad
+3. Buscar unidad
+4. Eliminar unidad segura
+5. Información general
+6. Construir ABB base
+7. Insertar matrícula
+8. Buscar matrícula
+9. Eliminar matrícula
+10. Mostrar recorridos ABB
+11. Auditoría ABB
+12. Comparación de búsquedas
+0. Salir
+Seleccione una opción: Total de unidades: 9
+Total de hojas: 5
+Altura general: 3
+Jerarquía válida: true
+Transformación hijo-izquierdo/hermano-derecho:
+- UTA -> hijoIzquierdo=FISEI
+- FISEI -> hermanoDerecho=FCHE
+- FCHE -> hermanoDerecho=FCS
+- FISEI -> hijoIzquierdo=SOFTWARE
+- SOFTWARE -> hermanoDerecho=TI
+- SOFTWARE -> hijoIzquierdo=3A
+- 3A -> hermanoDerecho=3B
+- TI -> hijoIzquierdo=4A
+
+=== SISTEMA DE AUDITORÍA JERÁRQUICA Y ACADÉMICA UTA ===
+1. Mostrar jerarquía general
+2. Agregar unidad
+3. Buscar unidad
+4. Eliminar unidad segura
+5. Información general
+6. Construir ABB base
+7. Insertar matrícula
+8. Buscar matrícula
+9. Eliminar matrícula
+10. Mostrar recorridos ABB
+11. Auditoría ABB
+12. Comparación de búsquedas
+0. Salir
+Seleccione una opción: Total de nodos: 12
+Total de hojas: 6
+Altura ABB: 3
+Matrícula menor: 20
+Matrícula mayor: 85
+Promedio ponderado: 8.25
+Invariante ABB válida: true
+
+=== SISTEMA DE AUDITORÍA JERÁRQUICA Y ACADÉMICA UTA ===
+1. Mostrar jerarquía general
+2. Agregar unidad
+3. Buscar unidad
+4. Eliminar unidad segura
+5. Información general
+6. Construir ABB base
+7. Insertar matrícula
+8. Buscar matrícula
+9. Eliminar matrícula
+10. Mostrar recorridos ABB
+11. Auditoría ABB
+12. Comparación de búsquedas
+0. Salir
+Seleccione una opción: Ascendente: exist=20, noExist=20
+Balanceado: exist=8, noExist=10
+
+=== SISTEMA DE AUDITORÍA JERÁRQUICA Y ACADÉMICA UTA ===
+1. Mostrar jerarquía general
+2. Agregar unidad
+3. Buscar unidad
+4. Eliminar unidad segura
+5. Información general
+6. Construir ABB base
+7. Insertar matrícula
+8. Buscar matrícula
+9. Eliminar matrícula
+10. Mostrar recorridos ABB
+11. Auditoría ABB
+12. Comparación de búsquedas
+0. Salir
+Seleccione una opción: Hasta luego.

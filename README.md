@@ -1,68 +1,129 @@
 # Sistema de Auditoría Jerárquica y Académica UTA
 
-Proyecto modular de consola en **Java 17** para gestionar el árbol general de unidades académicas, un árbol binario de búsqueda (ABB) de matrículas y una auditoría integrada. Cumple las operaciones y casos de aceptación de la prueba práctica adjunta.
-
-## 👥 Integrantes del Grupo N° 3
-
-| Nombre Completo | Rol / Responsabilidad |
-| :--- | :--- |
-| **Justin Guanoquiza** | Creador de Repositorio 
-| **Edwin Guamanquispe** | Desarrollador 
-| **Oseas Ortiz** | Desarrollador 
-| **Fernando Villacres** | Desarrollador 
-| **Jose Sierra** | Tester / QA 
+Aplicación de consola para administrar la jerarquía académica de la UTA y la
+matrícula de estudiantes con un árbol general y un árbol binario de búsqueda
+(ABB). Se implementó en Java 25 LTS, compatible con el requisito de Java 17 o
+superior de la práctica.
 
 ## Requisitos
-- JDK 17 o superior
-- Maven 3.9 o superior
 
-## Ejecutar
-```bash
+- JDK 25 (LTS)
+- Apache Maven 3.9 o superior
+
+## Compilar y ejecutar
+
+Desde la raíz del proyecto:
+
+```shell
 mvn test
-mvn compile exec:java
-mvn compile exec:java -Dexec.args="--demo"
+mvn exec:java
 ```
 
-La demo imprime los casos de aceptación clave. Las pruebas automatizadas están en `src/test/java/com/uta/academico/`.
+La suite contiene 24 pruebas JUnit 5. La salida de auditoría guardada en
+[`docs/evidencias/salida-auditoria.txt`](docs/evidencias/salida-auditoria.txt)
+se puede regenerar con:
 
-## Arquitectura
+```powershell
+"1`n5`n11`n12`n0`n" | mvn -q exec:java
+```
+
+## Funcionalidad
+
+### Árbol general
+
+- Construye la jerarquía inicial de nueve unidades: UTA, FISEI, FCHE, FCS,
+  SOFTWARE, TI, 3A, 3B y 4A.
+- Agrega unidades bajo un padre existente y rechaza códigos duplicados.
+- Busca por código y calcula nivel, grado, altura en aristas, cantidad de
+  nodos y hojas.
+- Imprime la jerarquía con sangría y rechaza eliminar la raíz o unidades que
+  todavía tienen descendientes.
+- Expone los enlaces de la representación hijo-izquierdo/hermano-derecho.
+
+### ABB de matrículas
+
+- Inserta recursivamente la secuencia de aceptación
+  `50, 30, 70, 20, 40, 60, 80, 35, 45, 65, 75, 85`.
+- Rechaza matrículas duplicadas y promedios fuera del rango `0..10`.
+- Busca y actualiza nombre/promedio sin modificar la clave.
+- Incluye recorridos preorden, inorden y postorden; eliminación de hoja, nodo
+  con un hijo y nodo con dos hijos mediante sucesor inorden.
+- Calcula altura, nodos, hojas, mínimo, máximo, promedio aritmético e
+  invariantes del ABB.
+- Compara contadores de búsqueda para árboles de igual tamaño: uno insertado
+  en orden ascendente y otro con una secuencia más equilibrada. Un ABB no se
+  autoequilibra; la altura depende del orden de inserción.
+
+### Auditoría integrada
+
+El menú muestra métricas de ambos árboles y permite comprobar la jerarquía y
+la invariante del ABB. La salida de ejemplo incluye también contadores de
+comparaciones para búsquedas exitosas y no exitosas.
+
+## Diseño
+
 ```mermaid
-classDiagram
-    class Unidad { -String codigo; -String nombre; -List~Unidad~ hijos }
-    class ArbolGeneral { -Unidad raiz; +agregarUnidad(); +buscarPorCodigo(); +eliminarUnidad(); +altura(); +convertirHijoIzquierdoHermanoDerecho() }
-    class NodoBinarioGeneral { -String codigo; -NodoBinarioGeneral hijoIzquierdo; -NodoBinarioGeneral hermanoDerecho }
-    class Estudiante { -int matricula; -String nombre; -double promedio }
-    class ABB { -NodoABB raiz; +insertar(); +buscar(); +eliminar(); +recorridoInOrden(); +esInvarianteValida() }
-    class MenuAuditoria { +iniciar(); +main() }
-    ArbolGeneral o-- Unidad
-    ArbolGeneral ..> NodoBinarioGeneral : transforma
-    ABB o-- Estudiante
-    MenuAuditoria --> ArbolGeneral
-    MenuAuditoria --> ABB
+flowchart TD
+    Menu[MenuAuditoria: consola y auditoría] --> AG[ArbolGeneral]
+    Menu --> ABB[ABB]
+    AG --> Unidad[Unidad y lista de hijos]
+    ABB --> Nodo[NodoABB]
+    Nodo --> Estudiante[Estudiante: matrícula, nombre, promedio]
+    Tests[Pruebas JUnit 5] --> AG
+    Tests --> ABB
 ```
 
-## Datos base y aceptación
-- Jerarquía: UTA → FISEI, FCHE, FCS; FISEI → SOFTWARE, TI; SOFTWARE → 3A, 3B; TI → 4A.
-- Resultado esperado: 9 unidades, 5 hojas, altura 3, grado FISEI 2, nivel 3B 3.
-- ABB: insertar 50, 30, 70, 20, 40, 60, 80, 35, 45, 65, 75, 85; duplicado 40 rechazado sin alterar el conteo; eliminar 20, 60 y 70 con sucesor inorden para dos hijos.
-- La conversión hijo-izquierdo/hermano-derecho crea nodos binarios reales. El hijo izquierdo representa el primer hijo; el hermano derecho enlaza al siguiente hermano.
-- La primera unidad agregada sin padre define la raíz. Una raíz no se elimina y una unidad con descendientes no se elimina.
+La búsqueda, inserción, eliminación y recorridos son recursivos; en el ABB las
+operaciones de búsqueda/actualización/eliminación cuestan `O(h)`, donde `h` es
+la altura. En el peor caso, un árbol sesgado puede tener altura `n - 1` y
+coste `O(n)`; un árbol más equilibrado requiere aproximadamente `O(log n)`.
+Las métricas y recorridos completos visitan todos los nodos y cuestan `O(n)`.
 
-## Complejidad
-| Operación | Complejidad |
-|---|---:|
-| Buscar/agregar/eliminar unidad en árbol general | O(n) |
-| Altura, conteo de nodos/hojas del árbol general | O(n) |
-| Buscar/insertar/eliminar en ABB | O(h), peor caso O(n) |
-| Recorridos, auditoría completa | O(n) |
-| Conversión hijo-izquierdo/hermano-derecho | O(n) |
+## Pruebas y casos de aceptación
 
-El ABB no se autoequilibra. En la comparación con 127 claves, el árbol ascendente puede alcanzar altura 126, mientras que el árbol construido por medianas tiene altura 6; por ello la búsqueda en cadena requiere muchas más comparaciones (hasta 127), frente a aproximadamente 7 en el equilibrado.
+Ejecutar `mvn test` para verificar 24 casos automatizados entre árboles
+vacíos y no vacíos, duplicados, padre inexistente, métricas, eliminación,
+promedios, recorridos y transformación de la jerarquía.
 
-## Evidencias
-- `docs/demo.txt`: salida de los casos de aceptación.
-- `docs/auditoria.txt`: ejemplo de auditoría integrada.
-- `docs/pruebas.txt`: instrucciones y resultado esperado de pruebas.
+Con los datos iniciales se espera:
 
-## GitHub y defensa
-La entrega técnica no puede inventar evidencia de colaboración. Añadan al repositorio las ramas `feature/*`, una pull request revisada, commits reales de cada integrante, URL/hash del último commit y capturas de `mvn test`, conforme a las instrucciones del docente.
+| Comprobación | Resultado |
+|---|---|
+| Árbol general | 9 unidades, 5 hojas, altura 3 |
+| FISEI y 3B | grado de FISEI 2, nivel de 3B 3 |
+| Inorden ABB inicial | 20, 30, 35, 40, 45, 50, 60, 65, 70, 75, 80, 85 |
+| Insertar otra matrícula 40 | Rechazada; total sin cambios |
+| Eliminar 20, 60 y 70 | Inorden: 30, 35, 40, 45, 50, 65, 75, 80, 85 |
+| Eliminar FISEI con descendientes | Rechazado; jerarquía sin cambios |
+| Árbol vacío / singleton | Altura -1 / 0, respectivamente |
+
+## Trabajo en equipo y GitHub
+
+Cada integrante debe crear su propia rama `feature/<tema>`, realizar commits
+que correspondan a cambios y pruebas reales, y abrir una pull request para que
+otro integrante la revise antes de fusionarla. No se deben atribuir cambios a
+una persona que no los realizó.
+
+Completar esta tabla con la evidencia real de GitHub al finalizar el trabajo:
+
+| Integrante (usuario GitHub) | Aporte realizado | Rama / commits / pull request |
+|---|---|---|
+| Pendiente de completar por el grupo | | |
+| Pendiente de completar por el grupo | | |
+| Pendiente de completar por el grupo | | |
+| Pendiente de completar por el grupo | | |
+| Pendiente de completar por el grupo | | |
+
+La revisión y la defensa individual deben evidenciarse con la actividad real
+de cada integrante en GitHub. Completen la tabla y agreguen capturas tomadas
+por el grupo antes de la entrega final.
+
+## Estructura principal
+
+- `src/main/java/com/uta/academico/ArbolGeneral.java`
+- `src/main/java/com/uta/academico/Unidad.java`
+- `src/main/java/com/uta/academico/ABB.java`
+- `src/main/java/com/uta/academico/Estudiante.java`
+- `src/main/java/com/uta/academico/MenuAuditoria.java`
+- `src/test/java/com/uta/academico/`
+- `docs/evidencias/salida-auditoria.txt`

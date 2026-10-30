@@ -116,9 +116,9 @@ public class ABB {
         if (raiz == null) {
             return false;
         }
-        if (buscar(matricula) == null) return false;
+        int tamAntes = totalNodos();
         raiz = eliminarRec(raiz, matricula);
-        return true;
+        return totalNodos() < tamAntes;
     }
 
     private NodoABB eliminarRec(NodoABB actual, int matricula) {
@@ -257,22 +257,20 @@ public class ABB {
 
     public static ABB construirAscendente() {
         ABB arbol = new ABB();
-        for (int v = 1; v <= 127; v++) arbol.insertar(v, "Estudiante" + v, 8.0);
+        int[] valores = {20, 30, 35, 40, 45, 50, 60, 65, 70, 75, 80, 85};
+        for (int v : valores) {
+            arbol.insertar(v, "Estudiante" + v, 7.0 + (v % 3));
+        }
         return arbol;
     }
 
     public static ABB construirEquilibrado() {
         ABB arbol = new ABB();
-        insertarRangoEquilibrado(arbol, 1, 127);
+        int[] valores = {50, 30, 70, 20, 40, 60, 80, 35, 45, 65, 75, 85};
+        for (int v : valores) {
+            arbol.insertar(v, "Estudiante" + v, 7.0 + (v % 3));
+        }
         return arbol;
-    }
-
-    private static void insertarRangoEquilibrado(ABB arbol, int inicio, int fin) {
-        if (inicio > fin) return;
-        int medio = inicio + (fin - inicio) / 2;
-        arbol.insertar(medio, "Estudiante" + medio, 8.0);
-        insertarRangoEquilibrado(arbol, inicio, medio - 1);
-        insertarRangoEquilibrado(arbol, medio + 1, fin);
     }
 
     public static class ResultadoComparacionBusqueda {

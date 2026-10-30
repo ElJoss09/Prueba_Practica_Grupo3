@@ -1,7 +1,9 @@
 package com.uta.academico;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ArbolGeneral {
     private Unidad raiz;
@@ -37,8 +39,10 @@ public class ArbolGeneral {
         }
 
         if (raiz == null) {
-            if (padre != null && !padre.isBlank()) return false;
-            raiz = new Unidad(nuevo, nombre == null || nombre.isBlank() ? nuevo : nombre.trim());
+            if (!"UTA".equalsIgnoreCase(nuevo)) {
+                return false;
+            }
+            raiz = new Unidad(nuevo, nombre == null || nombre.isBlank() ? "UTA" : nombre.trim());
             return true;
         }
 
@@ -199,19 +203,28 @@ public class ArbolGeneral {
         if (raiz == null) {
             return true;
         }
-        return validarRec(raiz, new ArrayList<>(), new ArrayList<>());
+        Set<String> visitados = new HashSet<>();
+        return validarRec(raiz, visitados);
     }
 
-    private boolean validarRec(Unidad actual, List<String> visitados, List<Unidad> camino) {
-        if (actual == null || actual.getCodigo() == null || actual.getCodigo().isBlank()) return false;
-        String codigo = actual.getCodigo().trim().toUpperCase();
-        if (camino.contains(actual) || visitados.contains(codigo)) return false;
-        visitados.add(codigo);
-        camino.add(actual);
-        for (Unidad hijo : actual.getHijos()) {
-            if (hijo == null || !validarRec(hijo, visitados, camino)) return false;
+    private boolean validarRec(Unidad actual, Set<String> visitados) {
+        if (actual == null) {
+            return true;
         }
-        camino.remove(camino.size() - 1);
+        if (!visitados.add(actual.getCodigo().trim())) {
+            return false;
+        }
+        if (actual.getCodigo().isBlank()) {
+            return false;
+        }
+        for (Unidad hijo : actual.getHijos()) {
+            if (hijo == null || hijo.getCodigo() == null || hijo.getCodigo().isBlank()) {
+                return false;
+            }
+            if (!validarRec(hijo, visitados)) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -258,37 +271,26 @@ public class ArbolGeneral {
         }
     }
 
-    /** Construye y devuelve el árbol binario equivalente, no solo una descripción textual. */
-    public NodoBinarioGeneral convertirHijoIzquierdoHermanoDerecho() {
-        return convertirRec(raiz);
-    }
-
-    private NodoBinarioGeneral convertirRec(Unidad unidad) {
-        if (unidad == null) return null;
-        NodoBinarioGeneral nodo = new NodoBinarioGeneral(unidad.getCodigo(), unidad.getNombre());
-        NodoBinarioGeneral anterior = null;
-        for (Unidad hijo : unidad.getHijos()) {
-            NodoBinarioGeneral convertido = convertirRec(hijo);
-            if (anterior == null) nodo.setHijoIzquierdo(convertido);
-            else anterior.setHermanoDerecho(convertido);
-            anterior = convertido;
-        }
-        return nodo;
-    }
-
     public List<String> transformacionHijoIzquierdoHermanoDerecho() {
         List<String> salida = new ArrayList<>();
-        NodoBinarioGeneral binario = convertirHijoIzquierdoHermanoDerecho();
-        imprimirBinarioRec(binario, salida);
+        if (raiz == null) {
+            return salida;
+        }
+        registrarTransformacion(raiz, salida);
         return salida;
     }
 
-    private void imprimirBinarioRec(NodoBinarioGeneral nodo, List<String> salida) {
-        if (nodo == null) return;
-        if (nodo.getHijoIzquierdo() != null) salida.add(nodo.getCodigo() + " -> hijoIzquierdo=" + nodo.getHijoIzquierdo().getCodigo());
-        if (nodo.getHermanoDerecho() != null) salida.add(nodo.getCodigo() + " -> hermanoDerecho=" + nodo.getHermanoDerecho().getCodigo());
-        imprimirBinarioRec(nodo.getHijoIzquierdo(), salida);
-        imprimirBinarioRec(nodo.getHermanoDerecho(), salida);
+    private void registrarTransformacion(Unidad actual, List<String> salida) {
+        List<Unidad> hijos = actual.getHijos();
+        if (!hijos.isEmpty()) {
+            salida.add(actual.getCodigo() + " -> hijoIzquierdo=" + hijos.get(0).getCodigo());
+            for (int i = 0; i < hijos.size() - 1; i++) {
+                salida.add(hijos.get(i).getCodigo() + " -> hermanoDerecho=" + hijos.get(i + 1).getCodigo());
+            }
+        }
+        for (Unidad hijo : hijos) {
+            registrarTransformacion(hijo, salida);
+        }
     }
 
     public static ArbolGeneral crearJerarquiaInicial() {
